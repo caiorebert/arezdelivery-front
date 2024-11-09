@@ -1,12 +1,11 @@
 import axios from 'axios';
 
-const API_URL = 'http://192.168.2.2:3000/opcoes';
+const API_URL = 'http://localhost:3000/opcoes';
 
 // GET request
 export const getOpcoes = async () => {
     try {
-        const response = await axios.get('http://192.168.2.2:3000/opcoes');
-        console.log(response);
+        const response = await axios.get(API_URL);
         return response.data;
     } catch (error) {
         console.error('Erro ao buscar opções:', error);

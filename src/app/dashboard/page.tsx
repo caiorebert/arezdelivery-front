@@ -1,27 +1,34 @@
 "use client";
 
+import Image from "next/image";
 import { Grid2, Paper, Typography, Card, CardMedia, CardContent, CardActions, Button, Icon, CircularProgress, AppBar, IconButton, Toolbar, Box, TextField } from "@mui/material";
-import { useState } from "react";
-import { login } from "../api/auth";
+import { useEffect, useState } from "react";
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import MenuIcon from '@mui/icons-material/Menu';
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import { verifyToken } from "../api/auth";
+
 
 export default function Login() {
 
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-
+  const [user, setUser] = useState({
+    login: null,
+    senha: null
+  });
   const [loading, setLoading] = useState(false);
 
-  async function submit() {
-    setLoading(true);
-    login(email, senha).then((result) => {
-      if (result !== null) {
-        document.cookie = `token=${result.token}`;
-        window.location.href = "/";
-      } else {
-        alert("não logado");
-      }
-      setLoading(false);
-    });
+  if (!loading && (user.login==null && user.senha==null)) {
+    // setLoading(true);
+    // verifyToken().then((result) => {
+    //   if (result) {
+        
+    //     alert("logado");
+    //   } else {
+    //     alert("não logado");
+    //   }
+    //   setLoading(false);
+    // });
   }
 
   return (
@@ -54,6 +61,10 @@ export default function Login() {
                 </AppBar>
               </Box>
             </Grid2>
+            {
+              (loading) ? 
+              <CircularProgress /> 
+              : 
               <Grid2 container size={12} padding={1}>
                 <Grid2 size={12} padding={1}>
                   <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -61,20 +72,16 @@ export default function Login() {
                   </Typography>
                 </Grid2>
                 <Grid2 size={12} padding={1}>
-                  <TextField id="filled-basic" onInput={(e) => setEmail(e.target.value)} label="Email" variant="filled" style={{width: "100%"}}/>
+                  <TextField id="filled-basic" label="Login" variant="filled" style={{width: "100%"}}/>
                 </Grid2>
                 <Grid2 size={12} padding={1}>
-                  <TextField id="filled-basic" type="password" onInput={(e) => setSenha(e.target.value)} label="Senha" variant="filled" style={{width: "100%"}}/>
+                  <TextField id="filled-basic" label="Senha" variant="filled" style={{width: "100%"}}/>
                 </Grid2>
                 <Grid2 size={12} padding={1}>
-                  {
-                  (loading) ? 
-                  <CircularProgress /> 
-                  : 
-                  <Button variant="contained" onClick={() => submit()} style={{width: "100%"}}>Entrar</Button>
-                  }
+                  <Button variant="contained" style={{width: "100%"}}>Entrar</Button>
                 </Grid2>
               </Grid2>
+            }
         </Paper>
       </Grid2>
     </Grid2>
