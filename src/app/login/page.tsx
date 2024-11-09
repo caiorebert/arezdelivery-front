@@ -3,9 +3,10 @@
 import { Grid2, Paper, Typography, Card, CardMedia, CardContent, CardActions, Button, Icon, CircularProgress, AppBar, IconButton, Toolbar, Box, TextField } from "@mui/material";
 import { useState } from "react";
 import { login } from "../api/auth";
+import { useRouter } from 'next/navigation';
 
 export default function Login() {
-
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
@@ -16,7 +17,7 @@ export default function Login() {
     login(email, senha).then((result) => {
       if (result !== null) {
         document.cookie = `token=${result.token}`;
-        window.location.href = "/";
+        router.push("/");
       } else {
         alert("não logado");
       }
