@@ -14,18 +14,15 @@ export default function Login() {
 
   async function submit() {
     setLoading(true);
-    // login(email, senha).then((result) => {
-    //   if (result !== null) {
-    //     document.cookie = `token=${result.token}`;
-    //     if () {
-
-    //     }
-    //     router.push("/");
-    //   } else {
-    //     alert("não logado");
-    //   }
-    //   setLoading(false);
-    // });
+    login(email, senha).then((result) => {
+      if (result !== null) {
+        document.cookie = `token=${result.token}`;
+        router.push("/");
+      } else {
+        alert("não logado");
+      }
+      setLoading(false);
+    });
   }
 
   return (
@@ -65,10 +62,10 @@ export default function Login() {
                   </Typography>
                 </Grid2>
                 <Grid2 size={12} padding={1}>
-                  <TextField id="filled-basic" onInput={(e) => setEmail(e.target.value)} label="Email" variant="filled" style={{width: "100%"}}/>
+                  <TextField id="filled-basic" onInput={(e:any) => setEmail(e.target.value)} label="Email" variant="filled" style={{width: "100%"}}/>
                 </Grid2>
                 <Grid2 size={12} padding={1}>
-                  <TextField id="filled-basic" type="password" onInput={(e) => setSenha(e.target.value)} label="Senha" variant="filled" style={{width: "100%"}}/>
+                  <TextField id="filled-basic" type="password" onInput={(e:any) => setSenha(e.target.value)} label="Senha" variant="filled" style={{width: "100%"}}/>
                 </Grid2>
                 <Grid2 size={12} padding={1}>
                   {
