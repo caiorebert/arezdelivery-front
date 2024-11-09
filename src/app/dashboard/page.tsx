@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import MenuIcon from '@mui/icons-material/Menu';
 import axios from 'axios';
-import { useRouter } from 'next/router';
 import { verifyToken } from "../api/auth";
 
 
