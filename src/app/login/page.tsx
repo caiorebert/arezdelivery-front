@@ -14,15 +14,18 @@ export default function Login() {
 
   async function submit() {
     setLoading(true);
-    login(email, senha).then((result) => {
-      if (result !== null) {
-        document.cookie = `token=${result.token}`;
-        router.push("/");
-      } else {
-        alert("não logado");
-      }
-      setLoading(false);
-    });
+    // login(email, senha).then((result) => {
+    //   if (result !== null) {
+    //     document.cookie = `token=${result.token}`;
+    //     if () {
+
+    //     }
+    //     router.push("/");
+    //   } else {
+    //     alert("não logado");
+    //   }
+    //   setLoading(false);
+    // });
   }
 
   return (

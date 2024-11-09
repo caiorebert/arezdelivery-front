@@ -1,13 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { Grid2, Paper, Typography, Card, CardMedia, CardContent, CardActions, Button, Icon, CircularProgress, AppBar, IconButton, Toolbar, Box, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import MenuIcon from '@mui/icons-material/Menu';
-import axios from 'axios';
-import { verifyToken } from "../api/auth";
-
 
 export default function Login() {
 
