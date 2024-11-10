@@ -1,4 +1,4 @@
-const API_URL = 'https://arezdelivery-api.vercel.app/';
+const API_URL = 'https://arezdelivery-api.vercel.app/estabelecimentos';
 
 export async function getEstabelecimentos() {
     try {
