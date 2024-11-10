@@ -4,9 +4,13 @@ import { Grid2, Paper, Typography, Card, CardMedia, CardContent, CardActions, Bu
 import { useState } from "react";
 import { login } from "../api/auth";
 import { useRouter } from 'next/navigation';
+import { store } from "@/lib/store";
+import { useDispatch } from "react-redux";
+import { setAuthState } from "@/lib/store/authSlice/authSlice";
 
 export default function Login() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
@@ -17,6 +21,7 @@ export default function Login() {
     login(email, senha).then((result) => {
       if (result !== null) {
         document.cookie = `token=${result.token}`;
+        dispatch(setAuthState(true))
         router.push("/");
       } else {
         alert("não logado");

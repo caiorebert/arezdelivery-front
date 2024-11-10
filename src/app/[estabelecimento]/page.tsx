@@ -8,6 +8,7 @@ import { Estabelecimento } from "@/lib/types/estabelecimentos";
 import { Categoria } from "@/lib/types/categoria";
 import { Card, CardContent, CardMedia } from "@mui/material";
 import styles from "./page.module.css";
+import { useAppSelector } from "@/lib/store";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -47,6 +48,7 @@ export default function EstabelecimentoPage({
 }: {
   params: Promise<{ estabelecimento: string }>;
 }) {
+  const authState = useAppSelector((state) => state.auth.authState);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [estabelecimento, setEstabelecimento] = useState<Estabelecimento>({
     id: 0,
@@ -83,12 +85,12 @@ export default function EstabelecimentoPage({
     <Grid2 container size={12} padding={0}>
       <Paper elevation={2} style={{width: "100%"}}>
         <Grid2 container size={12}>
-          <Grid2 size={4} padding={1} bgcolor={'blue'}>
-            <Button variant='contained'>
+          <Grid2 size={4} padding={1}>
+            <Button variant='contained' onClick={() => window.location.href="/"}>
               VOLTAR
             </Button>
           </Grid2>
-          <Grid2 size={4} textAlign={'center'} bgcolor={'red'}>
+          <Grid2 size={4} textAlign={'center'}>
             <table style={{width: '100%', height: '100%'}}>
               <tbody>
                 <tr>
@@ -99,7 +101,7 @@ export default function EstabelecimentoPage({
               </tbody>
             </table>
           </Grid2>
-          <Grid2 size={4} textAlign={'right'} bgcolor={'green'} padding={1}>
+          <Grid2 size={4} textAlign={'right'} padding={1}>
             <Grid2 className={styles.menu} size={12}>
               <table style={{width: "100%", height: "100%"}}>
                 <tbody>
@@ -116,7 +118,12 @@ export default function EstabelecimentoPage({
                 <tbody>
                   <tr>
                     <td>
-                      <Button variant="outlined" color="secondary">CADASTRAR</Button>
+                      {
+                        (authState) ?
+                        <Button variant="contained" color="primary">PAINEL</Button>
+                        :
+                        <Button onClick={() => window.location.href = "/cadastro"} variant="contained" color="primary">CADASTRE-SE</Button>
+                      }
                     </td>
                   </tr>
                 </tbody>
@@ -129,7 +136,9 @@ export default function EstabelecimentoPage({
         {
           (estabelecimento.id === 0) 
           ? 
-            <CircularProgress/>
+            <Grid2 size={12} textAlign={'center'}>
+              <CircularProgress/>
+            </Grid2>
 
           :
           <div style={{width: '100%'}}>
@@ -152,7 +161,7 @@ export default function EstabelecimentoPage({
                     width={90}
                     height={90}
                   />
-                  <Typography style={{marginLeft: 10}} variant="h4" color="black">{estabelecimento.nome}</Typography>
+                  <Typography style={{marginLeft: 10,}} variant="h4" color="black">{estabelecimento.nome}</Typography>
                 </div>
               </Grid2>
             </Grid2>
@@ -170,7 +179,7 @@ export default function EstabelecimentoPage({
               {
                 categorias.map((categoria, i) => (
                   <CustomTabPanel value={value} index={i}>
-                    <h6>{categoria.nome}</h6>
+                    <Typography variant="h6" component="h2" color="black">{categoria.nome}</Typography>
                     <Grid2 container size={12}>
                       {
                         opcoesByCategoria(estabelecimento.opcoes || [], categoria.nome).map((opcao, i) => (
@@ -180,7 +189,7 @@ export default function EstabelecimentoPage({
                                 component="img"
                                 height="150"
                                 image={(opcao.foto) ? opcao.foto : "https://upload.wikimedia.org/wikipedia/commons/5/53/Wikimedia-logo.png"}
-                                alt="green iguana"
+                                alt=""
                                 style={{borderBottom: "0.1px solid rgb(0, 0, 0, 0.1)"}}
                               />
                               <CardContent>
@@ -192,7 +201,7 @@ export default function EstabelecimentoPage({
                                 </Typography>
                               </CardContent>
                               <CardActions>
-                                <Button size="small">Adicionar</Button>
+                                <Button variant="contained" size="small">Pedir</Button>
                               </CardActions>
                             </Card>
                           </Grid2>
