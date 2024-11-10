@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = process.env.PROD || 'http://localhost:3000/opcoes';
+const API_URL = process.env.NEXT_PUBLIC_API_URL + '/opcoes';
 
 // GET request
 export const getOpcoes = async () => {

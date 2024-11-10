@@ -7,7 +7,7 @@ import { getCategoriasByEstabelecimento, getEstabelecimentoByName, getOpcoesByEs
 import { Estabelecimento } from "@/lib/types/estabelecimentos";
 import { Categoria } from "@/lib/types/categoria";
 import { Card, CardContent, CardMedia } from "@mui/material";
-import { get } from "http";
+import styles from "./page.module.css";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -83,12 +83,12 @@ export default function EstabelecimentoPage({
     <Grid2 container size={12} padding={0}>
       <Paper elevation={2} style={{width: "100%"}}>
         <Grid2 container size={12}>
-          <Grid2 size={2} padding={1}>
+          <Grid2 size={4} padding={1} bgcolor={'blue'}>
             <Button variant='contained'>
               VOLTAR
             </Button>
           </Grid2>
-          <Grid2 size={8} textAlign={'center'}>
+          <Grid2 size={4} textAlign={'center'} bgcolor={'red'}>
             <table style={{width: '100%', height: '100%'}}>
               <tbody>
                 <tr>
@@ -99,8 +99,8 @@ export default function EstabelecimentoPage({
               </tbody>
             </table>
           </Grid2>
-          <Grid2 container textAlign={'right'} size={2}>
-            <Grid2 size={6}>
+          <Grid2 size={4} textAlign={'right'} bgcolor={'green'} padding={1}>
+            <Grid2 className={styles.menu} size={12}>
               <table style={{width: "100%", height: "100%"}}>
                 <tbody>
                   <tr>
@@ -111,7 +111,7 @@ export default function EstabelecimentoPage({
                 </tbody>
               </table>
             </Grid2>
-            <Grid2 size={6}>
+            <Grid2 className={styles.botoes} size={12}>
               <table style={{width: "100%", height: "100%"}}>
                 <tbody>
                   <tr>
@@ -174,7 +174,7 @@ export default function EstabelecimentoPage({
                     <Grid2 container size={12}>
                       {
                         opcoesByCategoria(estabelecimento.opcoes || [], categoria.nome).map((opcao, i) => (
-                          <Grid2 size={4} key={i} padding={1}>
+                          <Grid2 size={{ xs: 12, md:2 }} key={i} padding={1}>
                             <Card>
                               <CardMedia
                                 component="img"
