@@ -1,4 +1,4 @@
-const API_URL = process.env.PROD || 'http://localhost:3000/estabelecimentos';
+const API_URL = 'https://arezdelivery-api.vercel.app/';
 
 export async function getEstabelecimentos() {
     try {
