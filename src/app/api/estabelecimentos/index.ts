@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/estabelecimentos';
+const API_URL = process.env.PROD || 'http://localhost:3000/estabelecimentos';
 
 export async function getEstabelecimentos() {
     try {
