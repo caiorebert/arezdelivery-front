@@ -71,7 +71,7 @@ const FormOpcao = forwardRef((props:Props, ref:any) => {
         defaultValue={props.opcao.foto}
         onChange={(e:any) => props.opcao.foto = e.target.value}
     />
-    <Image src={props.opcao.foto} loader={({src}) => src} width={200} height={200} alt={""} />
+    <Image src={props.opcao.foto || ""} loader={({src}) => src} width={200} height={200} alt={""} />
     <Button onClick={() => console.log(props.opcao)} variant="contained" color="primary">SALVAR</Button>
 </Box>);
 });
