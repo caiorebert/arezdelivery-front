@@ -20,7 +20,7 @@ interface Props {
     opcao: Opcao
 }
 
-const FormOpcao = forwardRef((props:Props, ref) => {
+const FormOpcao = forwardRef((props:Props, ref:any) => {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
 
@@ -39,7 +39,7 @@ const FormOpcao = forwardRef((props:Props, ref) => {
         margin="normal"
         size="small"
         defaultValue={props.opcao.nome}
-        onInput={(e) => props.opcao.nome = e.target.value}
+        onInput={(e:any) => props.opcao.nome = e.target.value}
     />
     <TextField
         id="outlined-basic"
@@ -49,7 +49,7 @@ const FormOpcao = forwardRef((props:Props, ref) => {
         margin="normal"
         size="small"
         defaultValue={props.opcao.descricao}
-        onInput={(e) => props.opcao.descricao = e.target.value}
+        onInput={(e:any) => props.opcao.descricao = e.target.value}
     />
     <TextField
         id="outlined-basic"
@@ -59,7 +59,7 @@ const FormOpcao = forwardRef((props:Props, ref) => {
         margin="normal"
         size="small"
         defaultValue={props.opcao.preco}
-        onChange={(e) => props.opcao.preco = e.target.value}
+        onChange={(e:any) => props.opcao.preco = e.target.value}
     />
     <TextField
         id="outlined-basic"
@@ -69,7 +69,7 @@ const FormOpcao = forwardRef((props:Props, ref) => {
         margin="normal"
         size="small"
         defaultValue={props.opcao.foto}
-        onChange={(e) => props.opcao.foto = e.target.value}
+        onChange={(e:any) => props.opcao.foto = e.target.value}
     />
     <Image src={props.opcao.foto} loader={({src}) => src} width={200} height={200} alt={""} />
     <Button onClick={() => console.log(props.opcao)} variant="contained" color="primary">SALVAR</Button>

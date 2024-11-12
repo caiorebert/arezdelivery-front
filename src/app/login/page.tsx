@@ -18,7 +18,7 @@ export default function Login() {
 
   async function submit() {
     setLoading(true);
-    login(email, senha).then((result) => {
+    login(email, senha).then((result:any) => {
       if (result !== null) {
         document.cookie = `token=${result.token}`;
         dispatch(setAuthState(true))
