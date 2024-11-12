@@ -24,7 +24,7 @@ export default function Home() {
   return (
     <Grid2 container size={12} padding={0}>
       <Grid2 container size={12} >
-        <Paper elevation={2} style={{width: "100%"}}>
+        <Paper elevation={2}>
           <Grid2 container size={12}>
             <Grid2 size={2} padding={1}></Grid2>
             <Grid2 size={8} textAlign={'center'}>
