@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { getEstabelecimentos, getOpcoesByEstabelecimento } from '../api/estabelecimentos';
 import { Estabelecimento } from '@/lib/types/estabelecimentos';
 import FormOpcao from "./components/FormOpcao";
+import { Opcao } from "@/lib/types/opcao";
 
 export default function AdminDashboard() {
     const [estabelecimentos, setEstabelecimentos] = useState<Estabelecimento[]>([]);
@@ -23,16 +24,14 @@ export default function AdminDashboard() {
     };
 
     useEffect(() => {
-        getEstabelecimentos().then((data) => {
+        getEstabelecimentos().then((data:any) => {
             setEstabelecimentos(data);
+
+            estabelecimentos.map((estabelecimento:Estabelecimento) => {
+                const opcoes:Opcao[] = getOpcoesByEstabelecimento(estabelecimento.id);
+                estabelecimento.opcoes = opcoes;
+            });
         });
-
-        estabelecimentos.map((estabelecimento:Estabelecimento) => {
-            const opcoes = getOpcoesByEstabelecimento(estabelecimento.id);
-            estabelecimento.opcoes = opcoes;
-        });
-
-
     }, []);
 
     return (
