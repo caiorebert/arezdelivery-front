@@ -1,3 +1,5 @@
+import { Opcao } from "@/lib/types/opcao";
+
 const API_URL =  process.env.NEXT_PUBLIC_API_URL + '/estabelecimentos';
 
 export async function getEstabelecimentos() {
@@ -30,7 +32,7 @@ export async function getEstabelecimentoByName(nome:string) {
     }
 }
 
-export async function getOpcoesByEstabelecimento(id:number) {
+export async function getOpcoesByEstabelecimento(id:number): Promise<Opcao[]> {
     try {
         const response = await fetch(`${API_URL}/${id}/opcoes`);
         if (!response.ok) {
