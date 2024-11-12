@@ -24,14 +24,17 @@ export default function AdminDashboard() {
     };
 
     useEffect(() => {
-        getEstabelecimentos().then((data:any) => {
-            setEstabelecimentos(data);
-
-            estabelecimentos.map((estabelecimento:Estabelecimento) => {
-                const opcoes:Opcao[] = getOpcoesByEstabelecimento(estabelecimento.id);
-                estabelecimento.opcoes = opcoes;
+        async function fetch() {
+            getEstabelecimentos().then((data:any) => {
+                setEstabelecimentos(data);
+    
+                estabelecimentos.map( async (estabelecimento:Estabelecimento) => {
+                    const opcoes:Opcao[] = await getOpcoesByEstabelecimento(estabelecimento.id);
+                    estabelecimento.opcoes = opcoes;
+                });
             });
-        });
+        }
+        fetch();
     }, []);
 
     return (
