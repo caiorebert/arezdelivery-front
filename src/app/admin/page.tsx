@@ -14,8 +14,8 @@ export default function AdminDashboard() {
     const [categorias, setCategorias] = useState([]);
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
-    const handleClose = () => setOpen(false);
     const handleOpen = () => setOpen(true);
+    
     const [selectedOption, setSelectedOption] = useState<any>(null);
 
     const handleEditOption = (option: any) => {
@@ -23,19 +23,37 @@ export default function AdminDashboard() {
         handleOpen();
     };
 
-    useEffect(() => {
-        async function fetch() {
-            getEstabelecimentos().then((data:any) => {
-                setEstabelecimentos(data);
-    
-                estabelecimentos.map( async (estabelecimento:Estabelecimento) => {
-                    const opcoes:Opcao[] = await getOpcoesByEstabelecimento(estabelecimento.id);
-                    estabelecimento.opcoes = opcoes;
-                });
+    const handleAddOption = () => {
+        const newOption = {
+            id: null,
+            nome: '',
+            descricao: '',
+            preco: 0,
+            estabelecimento: null
+        };
+        setSelectedOption(newOption);
+        handleOpen();
+    }
+
+    async function fetch() {
+        getEstabelecimentos().then((data:any) => {
+            setEstabelecimentos(data);
+
+            estabelecimentos.map( async (estabelecimento:Estabelecimento) => {
+                const opcoes:Opcao[] = await getOpcoesByEstabelecimento(estabelecimento.id);
+                estabelecimento.opcoes = opcoes;
             });
-        }
+        });
+    }
+    
+    useEffect(() => {
         fetch();
     }, []);
+
+    const handleClose = () => {
+        setOpen(false);
+        fetch();
+    }
 
     return (
         <Grid2 container size={12} padding={0}>
@@ -51,7 +69,14 @@ export default function AdminDashboard() {
                                         <Grid2 size={12} marginBottom={2} key={i}>
                                             <Accordion>
                                                 <AccordionSummary>
-                                                    <Typography variant="h6">{estabelecimento.nome}</Typography>
+                                                    <Grid2 container size={12}>
+                                                        <Grid2 size={9}>
+                                                            <Typography variant="h6">{estabelecimento.nome}</Typography>
+                                                        </Grid2>
+                                                        <Grid2 size={3}>
+                                                            <Button variant="contained">EDITAR</Button>
+                                                        </Grid2>
+                                                    </Grid2>
                                                 </AccordionSummary>
                                                 <AccordionDetails>
                                                     {
@@ -71,7 +96,8 @@ export default function AdminDashboard() {
                                                         :
                                                             <p>Loading...</p>
                                                     }
-                                                    <Button variant="contained">ADICIONAR OPÇÃO</Button>
+                                                    <hr></hr>
+                                                    <Button variant="contained" onClick={() => handleAddOption()}>ADICIONAR OPÇÃO</Button>
                                                 </AccordionDetails>
                                             </Accordion>
                                         </Grid2>
@@ -93,7 +119,7 @@ export default function AdminDashboard() {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <FormOpcao opcao={selectedOption} />
+                <FormOpcao opcao={selectedOption} close={handleClose}/>
             </Modal>
         </Grid2>
     );
