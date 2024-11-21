@@ -83,11 +83,11 @@ export default function AdminDashboard() {
                                                         (estabelecimento.opcoes) ?
                                                             estabelecimento.opcoes.map((opcao, j) => {
                                                                 return (
-                                                                    <Grid2 container size={12} key={j}>
+                                                                    <Grid2 container size={12} key={j} padding={1}>
                                                                         <Grid2 size={8}>
                                                                             <Typography variant="h6">{opcao.nome}</Typography>
                                                                         </Grid2>
-                                                                        <Grid2>
+                                                                        <Grid2 textAlign={'right'}>
                                                                             <Button variant="outlined" color="secondary" onClick={() => handleEditOption(opcao)}>EDITAR</Button>
                                                                         </Grid2>
                                                                     </Grid2>
