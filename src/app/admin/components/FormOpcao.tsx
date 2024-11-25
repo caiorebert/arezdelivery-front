@@ -1,8 +1,9 @@
-import { Box, Typography, Grid2, TextField, Button, CircularProgress } from "@mui/material";
+import { Box, Typography, Grid2, TextField, Button, CircularProgress, Alert, IconButton, Collapse } from "@mui/material";
 import { forwardRef, useEffect, useState } from "react";
 import Image from 'next/image';
-import { Opcao } from "@/lib/types/opcao";
-import { createOpcao, updateOpcao } from "../../api/opcoes";
+import { Opcao } from "../../../lib/types/opcao";
+import { createOpcao, deleteOpcao, updateOpcao } from "../../api/opcoes";
+import CloseIcon from '@mui/icons-material/Close';
 
 const style = {
     position: 'absolute',
@@ -22,39 +23,86 @@ interface Props {
     close: () => void
 }
 
+const CustomTextField = ({ label, field, value, onchange }: { label: string; field: keyof Opcao; value: any, onchange: any }) => (
+    <TextField
+        label={label}
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        size="small"
+        value={value}
+        onChange={(e) => onchange(field, e.target.value)}
+    />
+);
+
+const AlertRetorno = ({retorno, severity, handle}:{retorno:string; severity: string, handle:any}) => {
+    switch (severity) {
+        case "success":
+            return <Alert
+                action={
+                <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                    handle(false);
+                    }}
+                >
+                    <CloseIcon fontSize="inherit" />
+                </IconButton>
+                }
+                sx={{ mb: 2 }}
+            >
+                Alterado com sucesso!
+            </Alert>;
+        case "error":
+            return <Alert
+                action={
+                <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                    handle(false);
+                    }}
+                >
+                    <CloseIcon fontSize="inherit" />
+                </IconButton>
+                }
+                sx={{ mb: 2 }}
+            >
+                Alterado com sucesso!
+            </Alert>;
+        default:
+            return <Alert severity="info">Erro desconhecido</Alert>;
+    }
+}
 
 const FormOpcao = forwardRef((props:Props, ref:any) => {
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
     const [loading, setLoading] = useState(false);
     const [formValues, setFormValues] = useState<Opcao>(props.opcao);
-
-
-    const CustomTextField = ({ label, field }: { label: string; field: keyof Opcao }) => (
-        <TextField
-            label={label}
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            size="small"
-            value={formValues[field]}
-            onChange={(e) => handleChange(field, e.target.value)}
-        />
-    );
-
+    const [showAlert, setShowAlert] = useState(false);
+    const [severityAlert, setSeverityAlert] = useState("info");
+    
     const handleChange = (field: keyof Opcao, value: any) => {
         setFormValues((prev) => ({ ...prev, [field]: value }));
     };
 
-    function save(opcao:Opcao) {
+    async function save(opcao:Opcao) {
+        let response = null;
         setLoading(true);
         if (opcao.id === null) {
-            createOpcao(opcao);
+            response = await createOpcao(opcao);
         } else {
-            updateOpcao(opcao.id.toString(), opcao);
+            response = await updateOpcao(opcao.id.toString(), opcao);
         }
         setTimeout(() => {
             setLoading(false);
+            setSeverityAlert((response.statusCode==200) ? "success" : "error");
+            setShowAlert(true);
+            setTimeout(() => {
+                setShowAlert(false);
+            }, 3000);
         }, 1000);
     }
 
@@ -74,16 +122,22 @@ const FormOpcao = forwardRef((props:Props, ref:any) => {
     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
         Edite os detalhes da opção abaixo.
     </Typography>
-    <CustomTextField label="Nome" field="nome" />
-    <CustomTextField label="Descrição" field="descricao" />
-    <CustomTextField label="Preço" field="preco" />
-    <CustomTextField label="Foto" field="foto" />
+    
+    <CustomTextField label="Nome" field="nome" value={formValues["nome"]} onchange={handleChange}/>
+    <CustomTextField label="Descrição" field="descricao" value={formValues["descricao"]}  onchange={handleChange}/>
+    <CustomTextField label="Preço" field="preco" value={formValues["preco"]}  onchange={handleChange}/>
+    <CustomTextField label="Foto" field="foto" value={formValues["foto"]}  onchange={handleChange}/>
     <Grid2 container size={12} textAlign={'center'}>
         <Grid2 size={12}>
             <Typography variant="h6" component="h2">Thumb Foto</Typography>
         </Grid2>
         <Grid2 size={12}>
-            <Image src={formValues.foto || ""} loader={({src}) => src} width={200} height={200} alt={""} />
+            {
+                (formValues.foto == "" || formValues.foto == null) ?
+                <Image src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQt3sPWjr5DgU2hzlm6MmFQhnck5YKjhmE6vQ&s" loader={({src}) => src} width={200} height={200} alt={""} />
+                :
+                <Image src={formValues.foto || ""} loader={({src}) => src} width={200} height={200} alt={""} />
+            }
         </Grid2>
     </Grid2>
     {
@@ -92,6 +146,9 @@ const FormOpcao = forwardRef((props:Props, ref:any) => {
         :
         <Button onClick={() => save(formValues)} variant="contained" color="primary">SALVAR</Button>
     }
+    <Collapse in={showAlert}>
+        <AlertRetorno retorno="Alterado com sucesso!" severity="success" handle={setShowAlert}/>
+    </Collapse>
 </Box>);
 });
 

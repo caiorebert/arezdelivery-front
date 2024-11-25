@@ -1,12 +1,12 @@
 "use client";
 
 import Image from "next/image";	
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, CardContent, Grid, Grid2, Modal, Paper, Tab, Table, TextField, Typography } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, AppBar, Box, Button, Card, CardContent, Grid, Grid2, Modal, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { getEstabelecimentos, getOpcoesByEstabelecimento } from '../api/estabelecimentos';
 import { Estabelecimento } from '@/lib/types/estabelecimentos';
 import FormOpcao from "./components/FormOpcao";
-import { Opcao } from "@/lib/types/opcao";
+import { Opcao } from "../../lib/types/opcao";
 
 export default function AdminDashboard() {
     const [estabelecimentos, setEstabelecimentos] = useState<Estabelecimento[]>([]);
@@ -18,7 +18,9 @@ export default function AdminDashboard() {
     
     const [selectedOption, setSelectedOption] = useState<any>(null);
 
-    const handleEditOption = (option: any) => {
+    const handleEditOption = (option: Opcao, estabelecimento: Estabelecimento) => {
+        option.estabelecimento = 1;
+        option.categoria = 1;
         setSelectedOption(option);
         handleOpen();
     };
@@ -38,7 +40,7 @@ export default function AdminDashboard() {
     async function fetch() {
         getEstabelecimentos().then((data:any) => {
             setEstabelecimentos(data);
-
+            console.log(estabelecimentos);
             estabelecimentos.map( async (estabelecimento:Estabelecimento) => {
                 const opcoes:Opcao[] = await getOpcoesByEstabelecimento(estabelecimento.id);
                 estabelecimento.opcoes = opcoes;
@@ -57,9 +59,15 @@ export default function AdminDashboard() {
 
     return (
         <Grid2 container size={12} padding={0}>
-            <Typography variant="h6">Admin Dashboard</Typography>
-            <Grid2 container size={12} spacing={2}>
-                <Card>
+            <AppBar position="static">
+                <Grid2 container size={12} padding={1}>
+                    <Grid2 textAlign={'center'} size={12}>
+                        <Typography variant="h6">Admin Dashboard</Typography>
+                    </Grid2>
+                </Grid2>
+            </AppBar>
+            <Grid2 container size={12} spacing={2} marginTop={2}>
+                <Card style={{width: "100%"}}>
                     <CardContent>    
                         <Typography variant="h3">Estabelecimentos</Typography>
                         {
@@ -79,25 +87,52 @@ export default function AdminDashboard() {
                                                     </Grid2>
                                                 </AccordionSummary>
                                                 <AccordionDetails>
-                                                    {
-                                                        (estabelecimento.opcoes) ?
-                                                            estabelecimento.opcoes.map((opcao, j) => {
-                                                                return (
-                                                                    <Grid2 container size={12} key={j} padding={1}>
-                                                                        <Grid2 size={8}>
-                                                                            <Typography variant="h6">{opcao.nome}</Typography>
-                                                                        </Grid2>
-                                                                        <Grid2 textAlign={'right'}>
-                                                                            <Button variant="outlined" color="secondary" onClick={() => handleEditOption(opcao)}>EDITAR</Button>
-                                                                        </Grid2>
-                                                                    </Grid2>
-                                                                );
-                                                            })
-                                                        :
-                                                            <p>Loading...</p>
-                                                    }
-                                                    <hr></hr>
-                                                    <Button variant="contained" onClick={() => handleAddOption()}>ADICIONAR OPÇÃO</Button>
+                                                    <TableContainer component={Paper}>
+                                                        <Table>
+                                                            <TableHead >
+                                                                <TableRow>
+                                                                    <TableCell>Nome</TableCell>
+                                                                    <TableCell>Descrição</TableCell>
+                                                                    <TableCell>Preço</TableCell>
+                                                                    <TableCell>Editar</TableCell>
+                                                                    <TableCell>Excluir</TableCell>
+                                                                </TableRow>
+                                                            </TableHead>
+                                                            <TableBody>
+                                                                {
+                                                                (estabelecimento.opcoes) ?
+                                                                    estabelecimento.opcoes.map((opcao, j) => {
+                                                                        return (
+                                                                            <TableRow>
+                                                                                <TableCell>
+                                                                                    <Typography variant="h6">{opcao.nome}</Typography>
+                                                                                </TableCell>
+                                                                                <TableCell>
+                                                                                    <Typography variant="h6">{opcao.descricao}</Typography>
+                                                                                </TableCell>
+                                                                                <TableCell>
+                                                                                    <Typography variant="h6">
+                                                                                        R$ {opcao.preco.toLocaleString()}
+                                                                                    </Typography>
+                                                                                </TableCell>
+                                                                                <TableCell>
+                                                                                    <Button variant="contained" color="secondary" onClick={() => handleEditOption(opcao, estabelecimento)}>EDITAR</Button>
+                                                                                </TableCell>
+                                                                                <TableCell>
+                                                                                    <Button variant="contained" color="error" onClick={() => handleEditOption(opcao, estabelecimento)}>EXCLUIR</Button>
+                                                                                </TableCell>
+                                                                            </TableRow>
+                                                                        );
+                                                                    })
+                                                                    :
+                                                                    <p>Loading...</p>
+                                                                }
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
+                                                    <Grid2 size={12} padding={1}>
+                                                        <Button variant="contained" onClick={() => handleAddOption()}>ADICIONAR OPÇÃO</Button>
+                                                    </Grid2>
                                                 </AccordionDetails>
                                             </Accordion>
                                         </Grid2>

@@ -16,7 +16,11 @@ export const getOpcoes = async () => {
 // POST request
 export const createOpcao = async (opcao: any) => {
     try {
-        const response = await axios.post(API_URL, opcao);
+        const response = await axios.post(API_URL, opcao, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Erro ao criar opção:', error);
@@ -27,11 +31,8 @@ export const createOpcao = async (opcao: any) => {
 // PUT request
 export const updateOpcao = async (id: string, opcao: any) => {
     try {
-        const response = await axios.put(`${API_URL}/${id}`, opcao, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+        const response = await axios.put(`${API_URL}/${id}`, opcao);
+
         return response.data;
     } catch (error) {
         console.error('Erro ao atualizar opção:', error);

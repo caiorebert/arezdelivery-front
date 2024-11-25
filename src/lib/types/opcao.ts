@@ -4,4 +4,6 @@ export interface Opcao {
     descricao?: string;
     preco: string;
     foto?: string;
+    estabelecimento?: number;
+    categoria?: number;
 }

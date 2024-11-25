@@ -1,4 +1,4 @@
-import { Opcao } from "@/lib/types/opcao";
+import { Opcao } from "../../../lib/types/opcao";
 
 const API_URL =  process.env.NEXT_PUBLIC_API_URL + '/estabelecimentos';
 
