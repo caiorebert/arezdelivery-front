@@ -6,7 +6,10 @@ import { useState, useEffect } from 'react';
 import { getEstabelecimentos, getOpcoesByEstabelecimento } from '../api/estabelecimentos';
 import { Estabelecimento } from '@/lib/types/estabelecimentos';
 import FormOpcao from "./components/FormOpcao";
+import FormEstabelecimento from "./components/FormEstabelecimento";
 import { Opcao } from "../../lib/types/opcao";
+import { deleteOpcao } from "../api/opcoes";
+import { deleteEstabelecimento } from "../api/estabelecimentos";
 
 export default function AdminDashboard() {
     const [estabelecimentos, setEstabelecimentos] = useState<Estabelecimento[]>([]);
@@ -21,26 +24,83 @@ export default function AdminDashboard() {
     const handleEditOption = (option: Opcao, estabelecimento: Estabelecimento) => {
         option.estabelecimento = 1;
         option.categoria = 1;
-        setSelectedOption(option);
+        const opcao = new Opcao(
+            option.id,
+            option.nome,
+            (option.descricao) ? option.descricao : '',
+            option.preco,
+            option.foto,
+            option.estabelecimento,
+            option.categoria
+        )
+        setSelectedOption(opcao);
         handleOpen();
     };
 
-    const handleAddOption = () => {
-        const newOption = {
-            id: null,
-            nome: '',
-            descricao: '',
-            preco: 0,
-            estabelecimento: null
-        };
-        setSelectedOption(newOption);
+    const handleEditEstabelecimento = (estabelecimento: Estabelecimento) => {
+        const estab = new Estabelecimento(
+            estabelecimento.id,
+            estabelecimento.nome,
+            estabelecimento.endereco,
+            estabelecimento.telefone,
+            estabelecimento.cnpj,
+            estabelecimento.tagnome,
+            estabelecimento.email,
+            (estabelecimento.horarioFuncionamento) ? estabelecimento.horarioFuncionamento : '',
+            (estabelecimento.categoria) ? estabelecimento.categoria : '',
+            (estabelecimento.descricao) ? estabelecimento.descricao : '',
+            (estabelecimento.foto) ? estabelecimento.foto : '',
+            (estabelecimento.website) ? estabelecimento.website : '',
+            (estabelecimento.opcoes) ? estabelecimento.opcoes : []
+        );
+        setSelectedOption(estab);
         handleOpen();
+    }
+
+    const handleAddEstabelecimento = () => {
+        setSelectedOption(new Estabelecimento(
+            0,
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            []
+        ));
+        handleOpen();
+    }
+
+    const handleAddOption = () => {
+        setSelectedOption(new Opcao(
+            0,
+            '',
+            '',
+            '',
+            '',
+            1,
+        ));
+        handleOpen();
+    }
+
+    const deletarOpcao = async (id: number) => {
+        const response = await deleteOpcao(id);
+        if (response.status === 200) {
+            console.log('Opção excluída com sucesso');
+        } else {
+            console.log('Erro ao excluir opção');
+        }
+        fetch();
     }
 
     async function fetch() {
         getEstabelecimentos().then((data:any) => {
             setEstabelecimentos(data);
-            console.log(estabelecimentos);
             estabelecimentos.map( async (estabelecimento:Estabelecimento) => {
                 const opcoes:Opcao[] = await getOpcoesByEstabelecimento(estabelecimento.id);
                 estabelecimento.opcoes = opcoes;
@@ -76,16 +136,31 @@ export default function AdminDashboard() {
                                     return (
                                         <Grid2 size={12} marginBottom={2} key={i}>
                                             <Accordion>
-                                                <AccordionSummary>
-                                                    <Grid2 container size={12}>
-                                                        <Grid2 size={9}>
-                                                            <Typography variant="h6">{estabelecimento.nome}</Typography>
-                                                        </Grid2>
-                                                        <Grid2 size={3}>
-                                                            <Button variant="contained">EDITAR</Button>
-                                                        </Grid2>
+                                                <Grid2 container size={12}>
+                                                    <Grid2 size={8}>
+                                                        <AccordionSummary>
+                                                            <Grid2 container size={12}>
+                                                                <Grid2 size={9}>
+                                                                    <Typography variant="h6">{estabelecimento.nome}</Typography>
+                                                                </Grid2>
+                                                            </Grid2>
+                                                        </AccordionSummary>
                                                     </Grid2>
-                                                </AccordionSummary>
+                                                    <Grid2 size={4}>
+                                                        <table style={{width: "100%", height: "100%"}}>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td style={{textAlign: "center"}}>
+                                                                        <Button variant="contained" onClick={() => handleEditEstabelecimento(estabelecimento)}>EDITAR</Button>
+                                                                    </td>
+                                                                    <td style={{textAlign: "center"}}>
+                                                                        <Button variant="contained" color="error" onClick={() => { fetch(); deleteEstabelecimento(estabelecimento.id) }}>EXCLUIR</Button>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </Grid2>
+                                                </Grid2>
                                                 <AccordionDetails>
                                                     <TableContainer component={Paper}>
                                                         <Table>
@@ -119,13 +194,17 @@ export default function AdminDashboard() {
                                                                                     <Button variant="contained" color="secondary" onClick={() => handleEditOption(opcao, estabelecimento)}>EDITAR</Button>
                                                                                 </TableCell>
                                                                                 <TableCell>
-                                                                                    <Button variant="contained" color="error" onClick={() => handleEditOption(opcao, estabelecimento)}>EXCLUIR</Button>
+                                                                                    <Button variant="contained" color="error" onClick={() => deletarOpcao(opcao.id)}>EXCLUIR</Button>
                                                                                 </TableCell>
                                                                             </TableRow>
                                                                         );
                                                                     })
                                                                     :
-                                                                    <p>Loading...</p>
+                                                                    <TableRow>
+                                                                        <TableCell>
+                                                                            <Typography variant="h6">Loading...</Typography>
+                                                                        </TableCell>
+                                                                    </TableRow>
                                                                 }
                                                             </TableBody>
                                                         </Table>
@@ -143,18 +222,37 @@ export default function AdminDashboard() {
                                 <p>Loading...</p>
                         }
                         <Grid2 size={12}>
-                            <Button variant="contained">NOVO</Button>
+                            <Button variant="contained" onClick={() => handleAddEstabelecimento()}>NOVO</Button>
                         </Grid2>
                     </CardContent>
                 </Card>
             </Grid2>
+            {/* <Grid2 container size={12} spacing={2} marginTop={2}>
+                <Card style={{width: "100%"}}>
+                    <CardContent>
+                        <Typography variant="h3">Categorias</Typography>
+                        <Grid2 size={12}>
+                            <Button variant="contained">NOVO</Button>
+                        </Grid2>
+                    </CardContent>
+                </Card>
+            </Grid2> */}
             <Modal
-                open={open}
+                open={open && (selectedOption instanceof Opcao)}
                 onClose={handleClose}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
                 <FormOpcao opcao={selectedOption} close={handleClose}/>
+            </Modal>
+
+            <Modal 
+                open={open && (selectedOption instanceof Estabelecimento)}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <FormEstabelecimento estabelecimento={selectedOption} close={handleClose}/>
             </Modal>
         </Grid2>
     );

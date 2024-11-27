@@ -41,9 +41,9 @@ export const updateOpcao = async (id: string, opcao: any) => {
 };
 
 // DELETE request
-export const deleteOpcao = async (id: string) => {
+export const deleteOpcao = async (id: number) => {
     try {
-        const response = await axios.delete(`${API_URL}/${id}`);
+        const response = await axios.delete(`${API_URL}/${id.toString()}`);
         return response.data;
     } catch (error) {
         console.error('Erro ao deletar opção:', error);
