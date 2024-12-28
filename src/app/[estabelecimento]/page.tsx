@@ -8,7 +8,6 @@ import { Estabelecimento } from "@/lib/types/estabelecimentos";
 import { Categoria } from "@/lib/types/categoria";
 import { Card, CardContent, CardMedia } from "@mui/material";
 import styles from "./page.module.css";
-import { useAppSelector } from "@/lib/store";
 import SwipeableEdgeDrawer from "../components/drawer";
 import { Carrinho } from "@/lib/types/carrinho";
 
