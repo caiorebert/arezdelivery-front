@@ -4,11 +4,9 @@ import { Grid2, Paper, Typography, Card, CardMedia, CardContent, CardActions, Bu
 import { useEffect, useState } from "react";
 import { getEstabelecimentos } from "./api/estabelecimentos";
 import { Estabelecimento } from "../lib/types/estabelecimentos";
-import { useAppSelector } from "@/lib/store";
 import { useRouter } from 'next/navigation';
 
 export default function Home() {
-  const authState = useAppSelector((state) => state.auth.authState);
   const [estabelecimentos, setEstabelecimentos] = useState([]);
 
   useEffect(() => {
@@ -40,13 +38,13 @@ export default function Home() {
             </Grid2>
             <Grid2 container textAlign={'right'} size={2}>
               {
-                (authState) ?
-                <Grid2 size={12} padding={1}>
-                  <Button variant='contained' onClick={() => window.location.href="/login"}>
-                    {authState ? 'Painel' : 'Login'}
-                  </Button>
-                </Grid2>
-                :
+                // (authState) ?
+                // <Grid2 size={12} padding={1}>
+                //   <Button variant='contained' onClick={() => window.location.href="/login"}>
+                //     {authState ? 'Painel' : 'Login'}
+                //   </Button>
+                // </Grid2>
+                // :
                 <Grid2 size={12} padding={1}>
                   <Button variant='contained' onClick={() => window.location.href="/cadastro"}>
                     Cadastre-se

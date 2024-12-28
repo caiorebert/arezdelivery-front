@@ -4,9 +4,7 @@ import { Grid2, Paper, Typography, Card, CardMedia, CardContent, CardActions, Bu
 import { useState } from "react";
 import { login } from "../api/auth";
 import { useRouter } from 'next/navigation';
-import { store } from "@/lib/store";
 import { useDispatch } from "react-redux";
-import { setAuthState } from "@/lib/store/authSlice/authSlice";
 
 export default function Login() {
   const router = useRouter();
@@ -21,7 +19,6 @@ export default function Login() {
     login(email, senha).then((result:any) => {
       if (result !== null) {
         document.cookie = `token=${result.token}`;
-        dispatch(setAuthState(true))
         router.push("/");
       } else {
         alert("não logado");

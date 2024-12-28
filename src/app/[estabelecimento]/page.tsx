@@ -8,7 +8,6 @@ import { Estabelecimento } from "@/lib/types/estabelecimentos";
 import { Categoria } from "@/lib/types/categoria";
 import { Card, CardContent, CardMedia } from "@mui/material";
 import styles from "./page.module.css";
-import { useAppSelector } from "@/lib/store";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -48,7 +47,6 @@ export default function EstabelecimentoPage({
 }: {
   params: Promise<{ estabelecimento: string }>;
 }) {
-  const authState = useAppSelector((state) => state.auth.authState);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [estabelecimento, setEstabelecimento] = useState<Estabelecimento>({
     id: 0,
@@ -119,9 +117,9 @@ export default function EstabelecimentoPage({
                   <tr>
                     <td>
                       {
-                        (authState) ?
-                        <Button variant="contained" color="primary">PAINEL</Button>
-                        :
+                        // (authState) ?
+                        // <Button variant="contained" color="primary">PAINEL</Button>
+                        // :
                         <Button onClick={() => window.location.href = "/cadastro"} variant="contained" color="primary">CADASTRE-SE</Button>
                       }
                     </td>
