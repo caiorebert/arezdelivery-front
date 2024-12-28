@@ -8,7 +8,7 @@ import { useAppSelector } from "@/lib/store";
 import { useRouter } from 'next/navigation';
 
 export default function Home() {
-  const authState = useAppSelector((state) => state.auth.authState);
+  // const authState = useAppSelector((state) => state.auth.authState);
   const [estabelecimentos, setEstabelecimentos] = useState([]);
 
   useEffect(() => {
@@ -39,20 +39,11 @@ export default function Home() {
               </table>
             </Grid2>
             <Grid2 container textAlign={'right'} size={2}>
-              {
-                (authState) ?
-                <Grid2 size={12} padding={1}>
-                  <Button variant='contained' onClick={() => window.location.href="/login"}>
-                    {authState ? 'Painel' : 'Login'}
-                  </Button>
-                </Grid2>
-                :
-                <Grid2 size={12} padding={1}>
-                  <Button variant='contained' onClick={() => window.location.href="/cadastro"}>
-                    Cadastre-se
-                  </Button>
-                </Grid2>
-              }
+              <Grid2 size={12} padding={1}>
+                <Button variant='contained' onClick={() => window.location.href="/cadastro"}>
+                  Cadastre-se
+                </Button>
+              </Grid2>
             </Grid2>
           </Grid2>
         </Paper>

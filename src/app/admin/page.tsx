@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";	
-import { Accordion, AccordionDetails, AccordionSummary, AppBar, Box, Button, Card, CardContent, Grid, Grid2, Modal, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Alert, AppBar, Box, Button, Card, CardContent, Grid, Grid2, Modal, Paper, Snackbar, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { getEstabelecimentos, getOpcoesByEstabelecimento } from '../api/estabelecimentos';
 import { Estabelecimento } from '@/lib/types/estabelecimentos';
@@ -10,6 +10,34 @@ import FormEstabelecimento from "./components/FormEstabelecimento";
 import { Opcao } from "../../lib/types/opcao";
 import { deleteOpcao } from "../api/opcoes";
 import { deleteEstabelecimento } from "../api/estabelecimentos";
+import { SnackBarAlerta } from "@/lib/types/utils";
+
+function SnackBarAviso(snackBar:SnackBarAlerta | undefined) {
+    switch (snackBar?.tipo) {
+        case 1:
+            return (
+                <Box
+                    sx={{
+                        width: '100%',
+                        '& > * + *': {
+                            marginTop: 2,
+                        },
+                    }}
+                >
+                    <Snackbar color="red" open={true} autoHideDuration={6000}>
+                        {
+                            (snackBar?.severity === "success") ?
+                                <Alert severity="success">{snackBar?.retorno}</Alert>
+                            :
+                                <Alert severity="error">{snackBar?.retorno}</Alert>
+                        }
+                    </Snackbar>
+                </Box>
+            );
+        default:
+            return null;
+    }
+}
 
 export default function AdminDashboard() {
     const [estabelecimentos, setEstabelecimentos] = useState<Estabelecimento[]>([]);
@@ -18,7 +46,8 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
-    
+    const [snackBar, setSnackBar] = useState<SnackBarAlerta | undefined>();
+
     const [selectedOption, setSelectedOption] = useState<any>(null);
 
     const handleEditOption = (option: Opcao, estabelecimento: Estabelecimento) => {
@@ -90,10 +119,68 @@ export default function AdminDashboard() {
 
     const deletarOpcao = async (id: number) => {
         const response = await deleteOpcao(id);
-        if (response.status === 200) {
-            console.log('Opção excluída com sucesso');
+        if (response.status === 204) {
+            setSnackBar({
+                tipo: 1,
+                retorno: "Opção excluída com sucesso",
+                severity: "success"
+            });
+    
+            setTimeout(() => {
+                setSnackBar({
+                    tipo: 0,
+                    retorno: "",
+                    severity: ""
+                });
+            }, 6000);
         } else {
-            console.log('Erro ao excluir opção');
+            setSnackBar({
+                tipo: 1,
+                retorno: "Erro ao excluir opção",
+                severity: "error"
+            });
+    
+            setTimeout(() => {
+                setSnackBar({
+                    tipo: 0,
+                    retorno: "",
+                    severity: ""
+                });
+            }, 6000);
+        }
+        fetch();
+    }
+
+    const deletarEstabelecimento = async (id: number) => {
+        const response = await deleteEstabelecimento(id);
+        if (response.status === 204) {
+            setSnackBar({
+                tipo: 1,
+                retorno: "Estabelecimento excluído com sucesso",
+                severity: "success"
+            });
+    
+            setTimeout(() => {
+                setSnackBar({
+                    tipo: 0,
+                    retorno: "",
+                    severity: ""
+                });
+            }, 6000);
+        } else {
+            setSnackBar({
+                tipo: 1,
+                retorno: "Erro ao excluir estabelecimento",
+                severity: "error"
+            });
+    
+            setTimeout(() => {
+                setSnackBar({
+                    tipo: 0,
+                    retorno: "",
+                    severity: ""
+                });
+            }, 6000);
         }
         fetch();
     }
@@ -154,7 +241,7 @@ export default function AdminDashboard() {
                                                                         <Button variant="contained" onClick={() => handleEditEstabelecimento(estabelecimento)}>EDITAR</Button>
                                                                     </td>
                                                                     <td style={{textAlign: "center"}}>
-                                                                        <Button variant="contained" color="error" onClick={() => { fetch(); deleteEstabelecimento(estabelecimento.id) }}>EXCLUIR</Button>
+                                                                        <Button variant="contained" color="error" onClick={() => { deletarEstabelecimento(estabelecimento.id) }}>EXCLUIR</Button>
                                                                     </td>
                                                                 </tr>
                                                             </tbody>
@@ -237,6 +324,13 @@ export default function AdminDashboard() {
                     </CardContent>
                 </Card>
             </Grid2> */}
+            {
+                (snackBar?.tipo != 0) 
+                ? 
+                SnackBarAviso(snackBar)
+                :
+                null
+            }
             <Modal
                 open={open && (selectedOption instanceof Opcao)}
                 onClose={handleClose}

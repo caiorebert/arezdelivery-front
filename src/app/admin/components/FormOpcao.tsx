@@ -91,7 +91,8 @@ const FormOpcao = forwardRef((props:Props, ref:any) => {
     async function save(opcao:Opcao) {
         let response = null;
         setLoading(true);
-        if (opcao.id === null) {
+        opcao.foto = (opcao.foto == "") ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQt3sPWjr5DgU2hzlm6MmFQhnck5YKjhmE6vQ&s" : opcao.foto;
+        if (opcao.id === 0) {
             response = await createOpcao(opcao);
         } else {
             response = await updateOpcao(opcao.id.toString(), opcao);
@@ -109,9 +110,15 @@ const FormOpcao = forwardRef((props:Props, ref:any) => {
     return (<Box sx={style}>
         <Grid2 container size={12} textAlign={'center'}>
             <Grid2 size={9}>
+            { (formValues["id"]==0) ?
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                    Cadastrar Opção
+                </Typography>
+                :    
                 <Typography id="modal-modal-title" variant="h6" component="h2">
                     Editar Opção
                 </Typography>
+            }
             </Grid2>
             <Grid2 size={3}>
                 <Button onClick={props.close} variant="contained" color="secondary" sx={{ mb: 2 }}>
@@ -119,9 +126,16 @@ const FormOpcao = forwardRef((props:Props, ref:any) => {
                 </Button>
             </Grid2>
         </Grid2>
-    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-        Edite os detalhes da opção abaixo.
-    </Typography>
+    {
+        (formValues["id"]==0) ?
+        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Preencha os detalhes da opção abaixo.
+        </Typography>
+        :
+        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Edite os detalhes da opção abaixo.
+        </Typography>
+    }
     
     <CustomTextField label="Nome" field="nome" value={formValues["nome"]} onchange={handleChange}/>
     <CustomTextField label="Descrição" field="descricao" value={formValues["descricao"]}  onchange={handleChange}/>
@@ -146,7 +160,7 @@ const FormOpcao = forwardRef((props:Props, ref:any) => {
         :
         <Button onClick={() => save(formValues)} variant="contained" color="primary">SALVAR</Button>
     }
-    <Collapse in={showAlert}>
+    <Collapse in={showAlert} style={{marginTop: 10}}>
         <AlertRetorno retorno="Alterado com sucesso!" severity="success" handle={setShowAlert}/>
     </Collapse>
 </Box>);
