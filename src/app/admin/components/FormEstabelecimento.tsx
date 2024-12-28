@@ -6,6 +6,7 @@ import { createOpcao, deleteOpcao, updateOpcao } from "../../api/opcoes";
 import { createEstabelecimento, updateEstabelecimento } from "../../api/estabelecimentos";
 import CloseIcon from '@mui/icons-material/Close';
 import { Estabelecimento } from "@/lib/types/estabelecimentos";
+import { Alerta } from "@/lib/types/utils";
 
 const style = {
     position: 'absolute',
@@ -37,53 +38,37 @@ const CustomTextField = ({ label, field, value, onchange }: { label: string; fie
     />
 );
 
-const AlertRetorno = ({retorno, severity, handle}:{retorno:string; severity: string, handle:any}) => {
-    switch (severity) {
-        case "success":
-            return <Alert
-                action={
-                <IconButton
-                    aria-label="close"
-                    color="inherit"
-                    size="small"
-                    onClick={() => {
-                    handle(false);
-                    }}
+const AlertRetorno = ({alerta}:{alerta:Alerta | undefined}) => {
+    switch (alerta?.tipo) {
+        case 1:
+            return <Collapse in={true}>
+                <Alert
+                    action={
+                    <IconButton
+                        aria-label="close"
+                        color="inherit"
+                        size="small"
+                        onClick={() => {
+                        alerta.handle(false);
+                        }}
+                    >
+                        <CloseIcon fontSize="inherit" />
+                    </IconButton>
+                    }
+                    sx={{ mb: 2 }}
                 >
-                    <CloseIcon fontSize="inherit" />
-                </IconButton>
-                }
-                sx={{ mb: 2 }}
-            >
-                {retorno}
-            </Alert>;
-        case "error":
-            return <Alert
-                action={
-                <IconButton
-                    aria-label="close"
-                    color="inherit"
-                    size="small"
-                    onClick={() => {
-                    handle(false);
-                    }}
-                >
-                    <CloseIcon fontSize="inherit" />
-                </IconButton>
-                }
-                sx={{ mb: 2 }}
-            >
-                {retorno}
-            </Alert>;
+                    {alerta.retorno}
+                </Alert>
+            </Collapse>;
         default:
-            return <Alert severity="info">Erro desconhecido</Alert>;
+            return null;
     }
 }
 
 const FormEstabelecimento = forwardRef((props:Props, ref:any) => {
     const [loading, setLoading] = useState(false);
     const [formValues, setFormValues] = useState<Estabelecimento>(props.estabelecimento);
-    const [showAlert, setShowAlert] = useState(false);
+    const [alert, setAlert] = useState<Alerta | undefined>();
     const [severityAlert, setSeverityAlert] = useState("info");
     
     const handleChange = (field: keyof Opcao, value: any) => {
@@ -93,17 +78,26 @@ const FormEstabelecimento = forwardRef((props:Props, ref:any) => {
     async function save(estabelecimento:Estabelecimento) {
         let response = null;
         setLoading(true);
-        if (estabelecimento.id === 0) {
-            response = await createEstabelecimento(estabelecimento);
-        } else {
-            response = await updateEstabelecimento(estabelecimento.id.toString(), estabelecimento);
-        }
+        // if (estabelecimento.id === 0) {
+        //     response = await createEstabelecimento(estabelecimento);
+        // } else {
+        //     response = await updateEstabelecimento(estabelecimento.id.toString(), estabelecimento);
+        // }
         setTimeout(() => {
             setLoading(false);
-            setSeverityAlert((response.statusCode==200) ? "success" : "error");
-            setShowAlert(true);
+            setAlert({
+                tipo: 1,
+                severity: "success",
+                retorno: "Criado com sucesso!",
+                handle: setAlert
+            });
             setTimeout(() => {
-                setShowAlert(false);
+                setAlert({
+                    tipo: 0,
+                    severity: severityAlert,
+                    retorno: "",
+                    handle: setAlert
+                });
             }, 3000);
         }, 1000);
     }
@@ -112,7 +106,7 @@ const FormEstabelecimento = forwardRef((props:Props, ref:any) => {
         <Grid2 container size={12} textAlign={'center'}>
             <Grid2 size={9}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                    Editar Estabelecimento
+                    { formValues.id == 0 ? "Adicionar Estabelecimento" : "Editar Estabelecimento" }
                 </Typography>
             </Grid2>
             <Grid2 size={3}>
@@ -129,7 +123,7 @@ const FormEstabelecimento = forwardRef((props:Props, ref:any) => {
     <CustomTextField label="Descrição" field="descricao" value={formValues["descricao"]}  onchange={handleChange}/>
     <CustomTextField label="Endereço" field="endereco" value={formValues["endereco"]}  onchange={handleChange}/>
     <CustomTextField label="Telefone" field="telefone" value={formValues["telefone"]}  onchange={handleChange}/>
-    <Grid2 container size={12} textAlign={'center'}>
+    <Grid2 container size={12} textAlign={'center'} padding={5}>
         <Grid2 size={12}>
             <Typography variant="h6" component="h2">Thumb Foto</Typography>
         </Grid2>
@@ -148,9 +142,7 @@ const FormEstabelecimento = forwardRef((props:Props, ref:any) => {
         :
         <Button onClick={() => save(formValues)} variant="contained" color="primary">SALVAR</Button>
     }
-    <Collapse in={showAlert}>
-        <AlertRetorno retorno={(formValues.id == 0) ? "Criado com sucesso!" : "Alterado com sucesso!"} severity="success" handle={setShowAlert}/>
-    </Collapse>
+        <AlertRetorno alerta={alert}/>
 </Box>);
 });
 

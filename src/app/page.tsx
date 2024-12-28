@@ -37,20 +37,11 @@ export default function Home() {
               </table>
             </Grid2>
             <Grid2 container textAlign={'right'} size={2}>
-              {
-                // (authState) ?
-                // <Grid2 size={12} padding={1}>
-                //   <Button variant='contained' onClick={() => window.location.href="/login"}>
-                //     {authState ? 'Painel' : 'Login'}
-                //   </Button>
-                // </Grid2>
-                // :
-                <Grid2 size={12} padding={1}>
-                  <Button variant='contained' onClick={() => window.location.href="/cadastro"}>
-                    Cadastre-se
-                  </Button>
-                </Grid2>
-              }
+              <Grid2 size={12} padding={1}>
+                <Button variant='contained' onClick={() => window.location.href="/cadastro"}>
+                  Cadastre-se
+                </Button>
+              </Grid2>
             </Grid2>
           </Grid2>
         </Paper>

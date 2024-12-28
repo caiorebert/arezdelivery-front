@@ -106,7 +106,7 @@ export async function deleteEstabelecimento(id: number) {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        return await response.json();
+        return response;
     } catch (error) {
         console.error('Error deleting estabelecimento:', error);
         throw error;

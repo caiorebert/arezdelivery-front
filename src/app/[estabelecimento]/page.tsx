@@ -8,6 +8,9 @@ import { Estabelecimento } from "@/lib/types/estabelecimentos";
 import { Categoria } from "@/lib/types/categoria";
 import { Card, CardContent, CardMedia } from "@mui/material";
 import styles from "./page.module.css";
+import { useAppSelector } from "@/lib/store";
+import SwipeableEdgeDrawer from "../components/drawer";
+import { Carrinho } from "@/lib/types/carrinho";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -42,11 +45,17 @@ function a11yProps(index: number) {
   };
 }
 
+const isMobile = () => {
+  const userAgent = typeof navigator === 'undefined' ? '' : navigator.userAgent;
+  return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop|BlackBerry|webOS/i.test(userAgent);
+};
+
 export default function EstabelecimentoPage({
   params,
 }: {
   params: Promise<{ estabelecimento: string }>;
 }) {
+  const [carrinho, setCarrinho] = useState<Carrinho | undefined>();
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [estabelecimento, setEstabelecimento] = useState<Estabelecimento>({
     id: 0,
@@ -78,6 +87,44 @@ export default function EstabelecimentoPage({
     }
     getCategorias();
   }, [estabelecimento]);
+
+  const addCarrinho = (item: any) => {
+    if (carrinho === undefined) {
+      setCarrinho({pedidos: [{id: 1, opcao: item, quantidade: 1}]});
+      return;
+    }
+    if (carrinho.pedidos.some(pedido => pedido.opcao.id === item.id)) {
+      carrinho.pedidos.map(pedido => {
+        if (pedido.opcao.id === item.id) {
+          pedido.quantidade += 1;
+        }
+      });
+      setCarrinho(carrinho);
+    } else {
+      carrinho.pedidos.push({id: 1, opcao: item, quantidade: 1});
+      setCarrinho(carrinho);
+    }
+  };
+
+  const removeItem = (item: any) => {
+    if (carrinho === undefined) {
+      return;
+    }
+    if (carrinho.pedidos.some(pedido => pedido.opcao.id === item.id)) {
+      carrinho.pedidos.map(pedido => {
+        if (pedido.opcao.id === item.id) {
+          if (pedido.quantidade > 1) {
+            pedido.quantidade -= 1;
+          }
+        }
+        if (pedido.quantidade == 0) {
+          carrinho.pedidos = carrinho.pedidos.filter(pedido => pedido.opcao.id !== item.id);
+        }
+      });
+      setCarrinho(carrinho);
+      return;
+    }
+  };
 
   return (
     <Grid2 container size={12} padding={0}>
@@ -139,7 +186,7 @@ export default function EstabelecimentoPage({
             </Grid2>
 
           :
-          <div style={{width: '100%'}}>
+          <Grid2 container size={12} position={'relative'}>
             <Grid2 container size={12} position={'relative'}>
               <Grid2 size={12} bgcolor={'black'} style={{height: "300px", textAlign: 'center', position: 'relative', margin: 'auto', marginBottom: 40}}>
                 <div className="imgBackground" >
@@ -169,14 +216,14 @@ export default function EstabelecimentoPage({
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                   {
                     categorias.map((categoria, i) => (
-                      <Tab label={categoria.nome} {...a11yProps(i)} />
+                      <Tab key={i} label={categoria.nome} {...a11yProps(i)} />
                     ))
                   }
                 </Tabs>
               </Box>
               {
                 categorias.map((categoria, i) => (
-                  <CustomTabPanel value={value} index={i}>
+                  <CustomTabPanel key={i} value={value} index={i}>
                     <Typography variant="h6" component="h2" color="black">{categoria.nome}</Typography>
                     <Grid2 container size={12}>
                       {
@@ -199,7 +246,7 @@ export default function EstabelecimentoPage({
                                 </Typography>
                               </CardContent>
                               <CardActions>
-                                <Button variant="contained" size="small">Pedir</Button>
+                                <Button variant="contained" size="small" onClick={() => addCarrinho(opcao)}>Pedir</Button>
                               </CardActions>
                             </Card>
                           </Grid2>
@@ -211,8 +258,11 @@ export default function EstabelecimentoPage({
               }
             </Box>
             </Grid2>
-          </div> 
+          </Grid2>
         }
+        <SwipeableEdgeDrawer anchor="bottom" carrinho={carrinho} setCarrinho={setCarrinho} handleDrawerToggle={function (): void {
+          throw new Error("Function not implemented.");
+        } }/>
         </Grid2>
     </Grid2>
   );
