@@ -10,7 +10,6 @@ import { setAuthState } from "@/lib/store/authSlice/authSlice";
 
 export default function Login() {
   const router = useRouter();
-  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
@@ -21,7 +20,6 @@ export default function Login() {
     login(email, senha).then((result:any) => {
       if (result !== null) {
         document.cookie = `token=${result.token}`;
-        dispatch(setAuthState(true))
         router.push("/");
       } else {
         alert("não logado");
