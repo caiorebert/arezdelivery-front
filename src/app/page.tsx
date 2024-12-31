@@ -24,8 +24,7 @@ export default function Home() {
       <Grid2 container size={12} >
         <Paper elevation={2} style={{width: '100%'}}>
           <Grid2 container size={12}>
-            <Grid2 size={2} padding={1}></Grid2>
-            <Grid2 size={8} textAlign={'center'}>
+            <Grid2 size={12} textAlign={'center'}>
               <table style={{width: '100%', height: '100%'}}>
                 <tbody>
                   <tr>
@@ -35,13 +34,6 @@ export default function Home() {
                   </tr>
                 </tbody>
               </table>
-            </Grid2>
-            <Grid2 container textAlign={'right'} size={2}>
-              <Grid2 size={12} padding={1}>
-                <Button variant='contained' onClick={() => window.location.href="/cadastro"}>
-                  Cadastre-se
-                </Button>
-              </Grid2>
             </Grid2>
           </Grid2>
         </Paper>
