@@ -1,0 +1,4 @@
+# In wrangler.toml
+[[services]]
+binding = "WORKER_SELF_REFERENCE"
+service = "arez-delivery-front" # Change "arez-deliver" to your actual worker name
