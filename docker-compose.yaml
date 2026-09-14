@@ -17,7 +17,7 @@ services:
   api: # Seu NestJS
     container_name: nestjs-api
     build:
-      context: ./arezdelivery-back # Caminho para a pasta do NestJS
+      context: ./../arezdelivery-api # Caminho para a pasta do NestJS
       dockerfile: Dockerfile
     expose:
       - "3001" # Porta do NestJS
