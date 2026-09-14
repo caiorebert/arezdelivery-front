@@ -2,7 +2,7 @@ services:
   web: # Seu Next.js
     container_name: nextjs-app
     build:
-      context: ./arezdelivery-front # Caminho para a pasta do Next.js
+      context: ./ # Caminho para a pasta do Next.js
       dockerfile: Dockerfile
     expose:
       - "3000"
