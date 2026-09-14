@@ -1,14 +1,26 @@
-version: '3.8'
-
 services:
-  web:
+  web: # Seu Next.js
     container_name: nextjs-app
     build:
-      context: .
+      context: ./arezdelivery-front # Caminho para a pasta do Next.js
       dockerfile: Dockerfile
-    # Usamos expose para que a Cloudflare acesse internamente, sem abrir para a rede local
     expose:
       - "3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - api # O front só sobe depois do back estar pronto
+    restart: unless-stopped
+    networks:
+      - cloudflare-network
+
+  api: # Seu NestJS
+    container_name: nestjs-api
+    build:
+      context: ./arezdelivery-back # Caminho para a pasta do NestJS
+      dockerfile: Dockerfile
+    expose:
+      - "3001" # Porta do NestJS
     environment:
       - NODE_ENV=production
     restart: unless-stopped
@@ -19,7 +31,7 @@ services:
     image: cloudflare/cloudflared:latest
     container_name: cloudflared-tunnel
     restart: unless-stopped
-    # Alteramos o comando para gerar uma URL aleatória temporária
+    # Mantendo o Quick Tunnel apontado para o front-end
     command: tunnel --url http://web:3000
     networks:
       - cloudflare-network
