@@ -19,9 +19,8 @@ services:
     image: cloudflare/cloudflared:latest
     container_name: cloudflared-tunnel
     restart: unless-stopped
-    command: tunnel --no-autoupdate run
-    environment:
-      - TUNNEL_TOKEN=TUNNEL_TOKEN
+    # Alteramos o comando para gerar uma URL aleatória temporária
+    command: tunnel --url http://web:3000
     networks:
       - cloudflare-network
 
