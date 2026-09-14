@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  web:
+    container_name: nextjs-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Usamos expose para que a Cloudflare acesse internamente, sem abrir para a rede local
+    expose:
+      - "3000"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - cloudflare-network
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared-tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${972a00c7-57b4-4efa-adb9-13e04ef9f5b0}
+    networks:
+      - cloudflare-network
+
+networks:
+  cloudflare-network:
+    name: cloudflare-network

@@ -3,6 +3,7 @@ const nextConfig = {
     images: {
         domains: ['upload.wikimedia.org', 'conteudo.imguol.com.br'],
     },
+    output: 'standalone',
 };
 
 export default nextConfig;
