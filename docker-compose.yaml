@@ -21,7 +21,7 @@ services:
     restart: unless-stopped
     command: tunnel --no-autoupdate run
     environment:
-      - TUNNEL_TOKEN=${972a00c7-57b4-4efa-adb9-13e04ef9f5b0}
+      - TUNNEL_TOKEN=TUNNEL_TOKEN
     networks:
       - cloudflare-network
 
