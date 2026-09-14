@@ -20,7 +20,7 @@ services:
     container_name: cloudflared-tunnel
     restart: unless-stopped
     # Alteramos o comando para gerar uma URL aleatória temporária
-    command: tunnel --url http://web:3000
+    command: tunnel --url http://localhost:3000
     networks:
       - cloudflare-network
 
