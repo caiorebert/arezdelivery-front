@@ -28,6 +28,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_HOST=db
+      - PORT=3001
     depends_on:
       - db # O NestJS aguarda o banco iniciar
     restart: unless-stopped
