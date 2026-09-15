@@ -17,7 +17,7 @@ services:
   api:
     container_name: nestjs-api
     build:
-      context: ../arezdelivery-back
+      context: ../arezdelivery-api
       dockerfile: Dockerfile
     expose:
       - "3001"
