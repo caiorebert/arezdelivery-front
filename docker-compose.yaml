@@ -1,29 +1,52 @@
 services:
-  web: # Seu Next.js
+  web:
     container_name: nextjs-app
     build:
-      context: ./ # Caminho para a pasta do Next.js
+      context: ./
       dockerfile: Dockerfile
     expose:
       - "3000"
     environment:
       - NODE_ENV=production
     depends_on:
-      - api # O front só sobe depois do back estar pronto
+      - api
     restart: unless-stopped
     networks:
       - cloudflare-network
 
-  api: # Seu NestJS
+  api:
     container_name: nestjs-api
     build:
-      context: ../arezdelivery-api # Caminho para a pasta do NestJS
+      context: ../arezdelivery-back
       dockerfile: Dockerfile
     expose:
-      - "3001" # Porta do NestJS
+      - "3001"
     environment:
       - NODE_ENV=production
+      - POSTGRES_URL=${POSTGRES_URL} # Passa a URL de conexão para o NestJS
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+    depends_on:
+      - db # O NestJS aguarda o banco iniciar
     restart: unless-stopped
+    networks:
+      - cloudflare-network
+
+  db:
+    image: postgres:16-alpine
+    container_name: postgres-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+    ports:
+      - "127.0.0.1:5432:5432" # Expõe apenas para o seu servidor local (segurança)
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - cloudflare-network
 
@@ -31,7 +54,6 @@ services:
     image: cloudflare/cloudflared:latest
     container_name: cloudflared-tunnel
     restart: unless-stopped
-    # Mantendo o Quick Tunnel apontado para o front-end
     command: tunnel --url http://web:3000
     networks:
       - cloudflare-network
@@ -39,3 +61,7 @@ services:
 networks:
   cloudflare-network:
     name: cloudflare-network
+
+# Declaração do volume persistente para não perder os dados do banco
+volumes:
+  postgres_data:
