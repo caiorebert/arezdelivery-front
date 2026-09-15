@@ -27,7 +27,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_HOST=db
     depends_on:
       - db # O NestJS aguarda o banco iniciar
     restart: unless-stopped
@@ -42,7 +42,6 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_HOST=${POSTGRES_HOST}
     ports:
       - "127.0.0.1:5432:5432" # Expõe apenas para o seu servidor local (segurança)
     volumes:
